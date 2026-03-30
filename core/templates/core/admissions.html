@@ -1,0 +1,108 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Admissions — {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero" aria-label="Admissions">
+  <div class="page-hero-content">
+    <div class="section-label">Join Our Community</div>
+    <h1 class="page-hero-title">Admissions</h1>
+    <p class="page-hero-sub">A dedicated admissions page for programme discovery, enquiry, and next-step guidance.</p>
+  </div>
+  <div class="page-hero-bg" aria-hidden="true"></div>
+</section>
+
+<section class="portal-page-section section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Admission Journey</div>
+      <h2 class="section-title">A Clear Path from Interest to Enrolment</h2>
+      <p class="section-intro">This page gives students a focused place to understand programmes and reach the admissions team directly.</p>
+    </div>
+
+    <div class="feature-grid">
+      {% for step in admissions_steps %}
+      <article class="feature-card">
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="programs-grid portal-spacing">
+      {% for program in programs %}
+      <article class="program-card">
+        <span class="program-meta">{{ program.meta }}</span>
+        <h3>{{ program.name }}</h3>
+        <p>{{ program.description }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="admission-section section" aria-label="Admission Enquiry Form">
+  <div class="container">
+    <div class="admission-grid">
+      <div class="admission-copy">
+        <div class="section-label">Enquiry Form</div>
+        <h2 class="section-title">Talk to the Admissions Team</h2>
+        <p class="section-intro">Submit your interest here and the enquiry will be saved directly in the admin panel for follow-up.</p>
+      </div>
+
+      <div class="contact-form-wrap">
+        <form method="POST" class="contact-form" novalidate>
+          {% csrf_token %}
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_name">Student Name *</label>
+              {{ form.name }}
+              {% if form.name.errors %}<span class="form-error">{{ form.name.errors.0 }}</span>{% endif %}
+            </div>
+            <div class="form-group">
+              <label for="id_email">Email *</label>
+              {{ form.email }}
+              {% if form.email.errors %}<span class="form-error">{{ form.email.errors.0 }}</span>{% endif %}
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_phone">Phone *</label>
+              {{ form.phone }}
+              {% if form.phone.errors %}<span class="form-error">{{ form.phone.errors.0 }}</span>{% endif %}
+            </div>
+            <div class="form-group">
+              <label for="id_city">City</label>
+              {{ form.city }}
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_program_interest">Program Interest *</label>
+              {{ form.program_interest }}
+              {% if form.program_interest.errors %}<span class="form-error">{{ form.program_interest.errors.0 }}</span>{% endif %}
+            </div>
+            <div class="form-group">
+              <label for="id_current_qualification">Current Qualification</label>
+              {{ form.current_qualification }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="id_message">Message</label>
+            {{ form.message }}
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full">
+            Submit Admission Enquiry
+            <span class="btn-arrow" aria-hidden="true">→</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

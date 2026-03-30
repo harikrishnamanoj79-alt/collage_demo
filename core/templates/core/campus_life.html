@@ -1,0 +1,86 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Campus Life — {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero" aria-label="Campus Life">
+  <div class="page-hero-content">
+    <div class="section-label">Student Experience</div>
+    <h1 class="page-hero-title">Campus Life</h1>
+    <p class="page-hero-sub">Clubs, celebrations, student culture, and the experiences that make campus memorable.</p>
+  </div>
+  <div class="page-hero-bg" aria-hidden="true"></div>
+</section>
+
+<section class="portal-page-section section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Life Beyond Class</div>
+      <h2 class="section-title">A More Lively View of the Institution</h2>
+      <p class="section-intro">This page gives your website a richer story about student life, not just academics and administration.</p>
+    </div>
+
+    <div class="feature-grid">
+      {% for item in campus_life %}
+      <article class="feature-card">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="gallery-section section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Gallery</div>
+      <h2 class="section-title">Scenes from Campus</h2>
+    </div>
+    {% if gallery_images %}
+    <div class="gallery-masonry">
+      {% for img in gallery_images %}
+      <div class="gallery-item" data-src="{{ img.image.url }}" data-caption="{{ img.caption }}">
+        <img src="{{ img.image.url }}" alt="{{ img.caption|default:'Gallery image' }}" loading="lazy" />
+        <div class="gallery-item-overlay">
+          {% if img.caption %}<p>{{ img.caption }}</p>{% endif %}
+          <span class="gallery-zoom-icon" aria-hidden="true">⤢</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>No gallery images yet. <a href="/admin/core/gallery/add/">Upload some in the admin →</a></p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="blog-section section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Stories</div>
+      <h2 class="section-title">Recent Student and Campus Highlights</h2>
+    </div>
+    {% if recent_blogs %}
+    <div class="blog-grid">
+      {% for post in recent_blogs %}
+      <article class="blog-card">
+        <div class="blog-card-body">
+          {% if post.category %}<span class="blog-category">{{ post.category }}</span>{% endif %}
+          <h3 class="blog-card-title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+          <p class="blog-card-excerpt">{% if post.excerpt %}{{ post.excerpt|truncatechars:120 }}{% else %}{{ post.content|striptags|truncatechars:120 }}{% endif %}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'core/js/home.js' %}"></script>
+{% endblock %}

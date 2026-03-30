@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Blog — {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}
+
+{% block content %}
+
+<!-- Page Hero -->
+<section class="page-hero" aria-label="Blog">
+  <div class="page-hero-content">
+    <div class="section-label">Campus Stories</div>
+    <h1 class="page-hero-title">Blog &amp; News</h1>
+    <p class="page-hero-sub">Insights, events, and stories from our community.</p>
+  </div>
+  <div class="page-hero-bg" aria-hidden="true"></div>
+</section>
+
+<!-- Blog content -->
+<section class="blog-list-section section">
+  <div class="container">
+
+    <!-- Category filter -->
+    {% if categories %}
+    <div class="filter-bar reveal-element" role="group" aria-label="Filter by category">
+      <a href="{% url 'blog_list' %}" class="filter-btn {% if not active_category %}active{% endif %}">All</a>
+      {% for cat in categories %}
+        <a href="?category={{ cat }}" class="filter-btn {% if active_category == cat %}active{% endif %}">{{ cat }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if blogs %}
+      <div class="blog-list-grid">
+        {% for post in blogs %}
+        <article class="blog-card blog-card--large reveal-element" style="--card-delay: {{ forloop.counter0|add:'0' }};">
+          <a href="{{ post.get_absolute_url }}" class="blog-card-link" tabindex="-1" aria-hidden="true">
+            <div class="blog-card-image">
+              {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy" />
+              {% else %}
+                <div class="blog-card-placeholder" aria-hidden="true">
+                  <span>{{ post.title|first }}</span>
+                </div>
+              {% endif %}
+              <div class="blog-card-overlay" aria-hidden="true"></div>
+            </div>
+          </a>
+          <div class="blog-card-body">
+            <div class="blog-card-meta-top">
+              {% if post.category %}
+                <span class="blog-category">{{ post.category }}</span>
+              {% endif %}
+              <time datetime="{{ post.created_at|date:'Y-m-d' }}">{{ post.created_at|date:"M d, Y" }}</time>
+            </div>
+            <h2 class="blog-card-title">
+              <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+            </h2>
+            <p class="blog-card-excerpt">
+              {% if post.excerpt %}{{ post.excerpt }}{% else %}{{ post.content|striptags|truncatechars:160 }}{% endif %}
+            </p>
+            <div class="blog-card-footer">
+              <span class="blog-author">By {{ post.author }}</span>
+              <a href="{{ post.get_absolute_url }}" class="read-more-link">Read More →</a>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No blog posts found. {% if active_category %}<a href="{% url 'blog_list' %}">Clear filter</a>{% else %}Check back soon!{% endif %}</p>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

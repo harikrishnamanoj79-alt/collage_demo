@@ -1,0 +1,69 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Gallery — {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}
+
+{% block content %}
+
+<!-- Page Hero -->
+<section class="page-hero" aria-label="Gallery">
+  <div class="page-hero-content">
+    <div class="section-label">Visual Stories</div>
+    <h1 class="page-hero-title">Our Gallery</h1>
+    <p class="page-hero-sub">Moments that define our campus life.</p>
+  </div>
+  <div class="page-hero-bg" aria-hidden="true"></div>
+</section>
+
+<!-- Gallery content -->
+<section class="gallery-full-section section">
+  <div class="container">
+
+    <!-- Category filter -->
+    {% if categories %}
+    <div class="filter-bar reveal-element" role="group" aria-label="Filter by category">
+      <a href="{% url 'gallery' %}" class="filter-btn {% if not active_category %}active{% endif %}">All</a>
+      {% for cat in categories %}
+        <a href="?category={{ cat }}" class="filter-btn {% if active_category == cat %}active{% endif %}">{{ cat }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if images %}
+      <div class="gallery-masonry gallery-masonry--full" id="galleryGrid">
+        {% for img in images %}
+        <div class="gallery-item reveal-scale" data-src="{{ img.image.url }}" data-caption="{{ img.caption }}" style="--item-delay: {{ forloop.counter0 }};">
+          <img src="{{ img.image.url }}" alt="{{ img.caption|default:'Gallery image' }}" loading="lazy" />
+          <div class="gallery-item-overlay">
+            {% if img.caption %}<p>{{ img.caption }}</p>{% endif %}
+            <span class="gallery-zoom-icon" aria-hidden="true">⤢</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No gallery images yet. <a href="/admin/core/gallery/add/">Upload some in the admin →</a></p>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous">‹</button>
+  <button class="lightbox-next" id="lightboxNext" aria-label="Next">›</button>
+  <div class="lightbox-content">
+    <img id="lightboxImg" src="" alt="" />
+    <p id="lightboxCaption" class="lightbox-caption"></p>
+  </div>
+</div>
+<div id="lightboxBackdrop" class="lightbox-backdrop" hidden></div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'core/js/gallery.js' %}"></script>
+{% endblock %}

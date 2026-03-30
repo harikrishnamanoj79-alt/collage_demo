@@ -1,0 +1,606 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{% if site %}{{ site.college_name }}{% else %}Apex University{% endif %} — Excellence in Education{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO SECTION
+     Full-screen cinematic intro with background image/video.
+     Content (title, subtitle, CTA) is managed via Django admin.
+═══════════════════════════════════════════════════════ -->
+<section id="hero" class="hero-section" aria-label="Hero">
+  <!-- Background media (video takes priority over image) -->
+  {% if hero %}
+    {% if hero.background_video %}
+      <video class="hero-bg-video" autoplay muted loop playsinline>
+        <source src="{{ hero.background_video.url }}" type="video/mp4" />
+      </video>
+    {% elif hero.background_image %}
+      <div class="hero-bg-image" style="background-image: url('{{ hero.background_image.url }}');"></div>
+    {% else %}
+      <div class="hero-bg-gradient"></div>
+    {% endif %}
+  {% else %}
+    <div class="hero-bg-gradient"></div>
+  {% endif %}
+
+  <!-- Dark overlay -->
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <!-- Noise texture for depth -->
+  <div class="hero-noise" aria-hidden="true"></div>
+
+  <!-- Hero content -->
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="hero-year"></span>
+      <span class="hero-divider" aria-hidden="true">—</span>
+      <span class="hero-badge"></span>
+    </div>
+
+    <h1 class="hero-title">
+      {% if hero %}
+        {{ hero.title }}
+      {% else %}
+        Shaping Minds,<br /><em>Building Futures</em>
+      {% endif %}
+    </h1>
+
+    <p class="hero-subtitle">
+      {% if hero %}
+        {{ hero.subtitle }}
+      {% else %}
+        A world-class institution committed to academic excellence,
+        cutting-edge research, and transformative student experiences.
+      {% endif %}
+    </p>
+
+    <div class="hero-actions">
+      <a href="{% if hero %}{{ hero.cta_link }}{% else %}#about{% endif %}" class="btn btn--primary hero-cta">
+        {% if hero %}{{ hero.cta_text }}{% else %}Explore Now{% endif %}
+        <span class="btn-arrow" aria-hidden="true">↓</span>
+      </a>
+      <a href="{% url 'blog_list' %}" class="btn btn--ghost">Read Latest News</a>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MARQUEE TICKER
+     Scrolling horizontal text bar between hero and about.
+═══════════════════════════════════════════════════════ -->
+<div class="marquee-strip" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Academic Excellence</span>
+    <span class="marquee-dot">◆</span>
+    <span>World-Class Faculty</span>
+    <span class="marquee-dot">◆</span>
+    <span>State-of-the-Art Facilities</span>
+    <span class="marquee-dot">◆</span>
+    <span>Global Alumni Network</span>
+    <span class="marquee-dot">◆</span>
+    <span>Research &amp; Innovation</span>
+    <span class="marquee-dot">◆</span>
+    <span>Student Excellence Awards</span>
+    <span class="marquee-dot">◆</span>
+    <!-- Duplicate for seamless loop -->
+    <span>Academic Excellence</span>
+    <span class="marquee-dot">◆</span>
+    <span>World-Class Faculty</span>
+    <span class="marquee-dot">◆</span>
+    <span>State-of-the-Art Facilities</span>
+    <span class="marquee-dot">◆</span>
+    <span>Global Alumni Network</span>
+    <span class="marquee-dot">◆</span>
+    <span>Research &amp; Innovation</span>
+    <span class="marquee-dot">◆</span>
+    <span>Student Excellence Awards</span>
+    <span class="marquee-dot">◆</span>
+  </div>
+</div>
+
+
+<section class="quick-links-section section" aria-label="Quick Links">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Quick Access</div>
+      <h2 class="section-title">Everything Visitors Need, Up Front</h2>
+      <p class="section-intro">Inspired by the reference college portal, this section gives students and parents direct access to the most-used pages in one place.</p>
+    </div>
+
+    <div class="quick-links-grid">
+      {% for item in quick_links %}
+      <a href="{{ item.href }}" class="quick-link-card">
+        <span class="quick-link-kicker">Portal Link</span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+        <span class="quick-link-arrow" aria-hidden="true">→</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<section class="events-section section" aria-label="Upcoming Events">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Upcoming Events</div>
+      <h2 class="section-title">What’s Happening Next on Campus</h2>
+      <p class="section-intro">Seminars, admission drives, workshops, celebrations, and student activities can now be highlighted directly on the homepage.</p>
+    </div>
+
+    {% if upcoming_events %}
+    <div class="events-grid">
+      {% for event in upcoming_events %}
+      <article class="event-card">
+        <div class="event-date-block">
+          <span class="event-month">{{ event.event_date|date:"M" }}</span>
+          <span class="event-day">{{ event.event_date|date:"d" }}</span>
+        </div>
+        <div class="event-body">
+          {% if event.category %}<span class="event-category">{{ event.category }}</span>{% endif %}
+          <h3>{{ event.title }}</h3>
+          <p>{{ event.summary }}</p>
+          <div class="event-meta">
+            {% if event.event_time %}<span>{{ event.event_time }}</span>{% endif %}
+            {% if event.location %}<span>{{ event.location }}</span>{% endif %}
+          </div>
+          {% if event.cta_link %}
+          <a href="{{ event.cta_link }}" class="section-link">{{ event.cta_text|default:"Learn More" }} →</a>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>No upcoming events yet. <a href="/admin/core/upcomingevent/add/">Add one in the admin →</a></p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     ABOUT SECTION
+     Content editable via Admin → About Us.
+═══════════════════════════════════════════════════════ -->
+<section id="about" class="about-section section" aria-label="About Us">
+  <div class="container">
+    {% if about %}
+
+      <div class="about-grid">
+        <!-- Left: Text content -->
+        <div class="about-text">
+          <div class="section-label reveal-element">About Us</div>
+          <h2 class="section-title reveal-element">{{ about.title }}</h2>
+          {% if about.tagline %}
+            <p class="about-tagline reveal-element">{{ about.tagline }}</p>
+          {% endif %}
+          <div class="about-description reveal-element">
+            {{ about.description|safe }}
+          </div>
+          <a href="{% url 'contact' %}" class="btn btn--outline reveal-element">Get in Touch →</a>
+        </div>
+
+        <!-- Right: Image + stats -->
+        <div class="about-visual">
+          {% if about.image %}
+            <div class="about-image-wrap reveal-scale">
+              <img src="{{ about.image.url }}" alt="{{ about.title }}" loading="lazy" />
+              <div class="about-image-border" aria-hidden="true"></div>
+            </div>
+          {% endif %}
+
+          <!-- Stat counters -->
+          <div class="stats-grid">
+            {% if about.founded_year %}
+            <div class="stat-card reveal-element">
+              <span class="stat-value">{{ about.founded_year }}</span>
+              <span class="stat-label">Year Founded</span>
+            </div>
+            {% endif %}
+            {% if about.students_count %}
+            <div class="stat-card reveal-element">
+              <span class="stat-value counter" data-target="{{ about.students_count }}">{{ about.students_count }}</span>
+              <span class="stat-label">Students</span>
+            </div>
+            {% endif %}
+            {% if about.faculty_count %}
+            <div class="stat-card reveal-element">
+              <span class="stat-value counter" data-target="{{ about.faculty_count }}">{{ about.faculty_count }}</span>
+              <span class="stat-label">Faculty</span>
+            </div>
+            {% endif %}
+            {% if about.programs_count %}
+            <div class="stat-card reveal-element">
+              <span class="stat-value counter" data-target="{{ about.programs_count }}">{{ about.programs_count }}</span>
+              <span class="stat-label">Programs</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    {% else %}
+      <!-- Fallback if no About record in admin -->
+      <div class="about-placeholder">
+        <p>No About Us content yet. <a href="/admin/core/aboutus/add/">Add it in the admin →</a></p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+
+<section class="academics-section section" aria-label="Academics">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Academics</div>
+      <h2 class="section-title">Programs and Student Pathways</h2>
+      <p class="section-intro">The reference site gives strong visibility to departments and courses, so this homepage now highlights your core academic offerings more clearly.</p>
+    </div>
+
+    <div class="programs-grid">
+      {% for program in programs %}
+      <article class="program-card">
+        <span class="program-meta">{{ program.meta }}</span>
+        <h3>{{ program.name }}</h3>
+        <p>{{ program.description }}</p>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="feature-grid">
+      {% for item in academics_features %}
+      <article class="feature-card">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<section class="highlights-section section" aria-label="Campus Highlights">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Campus Highlights</div>
+      <h2 class="section-title">More of a College Portal Experience</h2>
+      <p class="section-intro">These spotlight blocks bring in the practical, information-rich feel seen on the reference engineering college website.</p>
+    </div>
+
+    <div class="highlights-grid">
+      {% for feature in campus_highlights %}
+      <article class="highlight-card">
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<section class="campus-life-section section" aria-label="Campus Life">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Campus Life</div>
+      <h2 class="section-title">Learning Beyond the Classroom</h2>
+      <p class="section-intro">A stronger campus-life section helps the website feel more complete for prospective students and parents.</p>
+    </div>
+
+    <div class="feature-grid">
+      {% for item in campus_life %}
+      <article class="feature-card">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<section class="student-corner-section section" aria-label="Student Corner">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Student Corner</div>
+      <h2 class="section-title">Useful Spaces for Current Students</h2>
+      <p class="section-intro">This section gives the homepage a more practical student-portal character with support-oriented highlights.</p>
+    </div>
+
+    <div class="feature-grid">
+      {% for item in student_corner %}
+      <article class="feature-card">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     BLOG SECTION (Latest 3 posts)
+     Full blog at /blog/
+═══════════════════════════════════════════════════════ -->
+<section id="blog" class="blog-section section" aria-label="Latest Blog Posts">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label reveal-element">Latest News</div>
+      <h2 class="section-title reveal-element">From the Campus</h2>
+      <a href="{% url 'blog_list' %}" class="section-link reveal-element">View All Posts →</a>
+    </div>
+
+    {% if recent_blogs %}
+      <div class="blog-grid">
+        {% for post in recent_blogs %}
+        <article class="blog-card reveal-element" style="--card-delay: {{ forloop.counter0 }};">
+          <a href="{{ post.get_absolute_url }}" class="blog-card-link" tabindex="-1" aria-hidden="true">
+            <div class="blog-card-image">
+              {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy" />
+              {% else %}
+                <div class="blog-card-placeholder" aria-hidden="true">
+                  <span>{{ post.title|first }}</span>
+                </div>
+              {% endif %}
+              <div class="blog-card-overlay" aria-hidden="true"></div>
+            </div>
+          </a>
+          <div class="blog-card-body">
+            {% if post.category %}
+              <span class="blog-category">{{ post.category }}</span>
+            {% endif %}
+            <h3 class="blog-card-title">
+              <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+            </h3>
+            <p class="blog-card-excerpt">
+              {% if post.excerpt %}{{ post.excerpt|truncatechars:120 }}{% else %}{{ post.content|striptags|truncatechars:120 }}{% endif %}
+            </p>
+            <div class="blog-card-meta">
+              <span class="blog-author">{{ post.author }}</span>
+              <span>·</span>
+              <time datetime="{{ post.created_at|date:'Y-m-d' }}">{{ post.created_at|date:"M d, Y" }}</time>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No blog posts yet. <a href="/admin/core/blog/add/">Add one in the admin →</a></p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+
+<section id="admission" class="admission-section section" aria-label="Admission Enquiry">
+  <div class="container">
+    <div class="admission-grid">
+      <div class="admission-copy">
+        <div class="section-label">Admissions</div>
+        <h2 class="section-title">Start Your Admission Enquiry</h2>
+        <p class="section-intro">Students can now send a direct admission enquiry from the homepage. Every submission is saved in the Django admin for follow-up.</p>
+
+        <div class="admission-points">
+          <div class="feature-card">
+            <h3>Fast Response Flow</h3>
+            <p>Capture interest from students immediately instead of sending them away to another page first.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Program Interest Tracking</h3>
+            <p>See which programs attract the most attention and follow up with better context.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-wrap">
+        <form method="POST" action="{% url 'home' %}#admission" class="contact-form" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="admission" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_name">Student Name *</label>
+              {{ admission_form.name }}
+              {% if admission_form.name.errors %}
+                <span class="form-error">{{ admission_form.name.errors.0 }}</span>
+              {% endif %}
+            </div>
+            <div class="form-group">
+              <label for="id_email">Email *</label>
+              {{ admission_form.email }}
+              {% if admission_form.email.errors %}
+                <span class="form-error">{{ admission_form.email.errors.0 }}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_phone">Phone *</label>
+              {{ admission_form.phone }}
+              {% if admission_form.phone.errors %}
+                <span class="form-error">{{ admission_form.phone.errors.0 }}</span>
+              {% endif %}
+            </div>
+            <div class="form-group">
+              <label for="id_city">City</label>
+              {{ admission_form.city }}
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_program_interest">Program Interest *</label>
+              {{ admission_form.program_interest }}
+              {% if admission_form.program_interest.errors %}
+                <span class="form-error">{{ admission_form.program_interest.errors.0 }}</span>
+              {% endif %}
+            </div>
+            <div class="form-group">
+              <label for="id_current_qualification">Current Qualification</label>
+              {{ admission_form.current_qualification }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="id_message">Message</label>
+            {{ admission_form.message }}
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full">
+            Submit Admission Enquiry
+            <span class="btn-arrow" aria-hidden="true">→</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     GALLERY PREVIEW (8 images)
+     Full gallery at /gallery/
+═══════════════════════════════════════════════════════ -->
+<section id="gallery-preview" class="gallery-section section" aria-label="Gallery Preview">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label reveal-element">Campus Life</div>
+      <h2 class="section-title reveal-element">Life at {% if site %}{{ site.college_name }}{% else %}Apex{% endif %}</h2>
+      <a href="{% url 'gallery' %}" class="section-link reveal-element">Full Gallery →</a>
+    </div>
+
+    {% if gallery_images %}
+      <div class="gallery-masonry" id="galleryGrid">
+        {% for img in gallery_images %}
+        <div class="gallery-item reveal-scale" data-src="{{ img.image.url }}" data-caption="{{ img.caption }}">
+          <img src="{{ img.image.url }}" alt="{{ img.caption|default:'Gallery image' }}" loading="lazy" />
+          <div class="gallery-item-overlay">
+            {% if img.caption %}<p>{{ img.caption }}</p>{% endif %}
+            <span class="gallery-zoom-icon" aria-hidden="true">⤢</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No gallery images yet. <a href="/admin/core/gallery/add/">Upload some in the admin →</a></p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CONTACT SECTION
+     Messages saved to database; admin views them at /admin/
+═══════════════════════════════════════════════════════ -->
+<section id="contact" class="contact-section section" aria-label="Contact">
+  <div class="container">
+    <div class="contact-grid">
+      <!-- Left: Info -->
+      <div class="contact-info">
+        <div class="section-label reveal-element">Get In Touch</div>
+        <h2 class="section-title reveal-element">Let's Start a Conversation</h2>
+        <p class="contact-description reveal-element">
+          Whether you're a prospective student, a researcher, or just curious — we'd love to hear from you.
+        </p>
+        {% if site %}
+          {% if site.address %}
+            <div class="contact-detail reveal-element">
+              <span class="contact-icon" aria-hidden="true">◎</span>
+              <span>{{ site.address }}</span>
+            </div>
+          {% endif %}
+          {% if site.phone %}
+            <div class="contact-detail reveal-element">
+              <span class="contact-icon" aria-hidden="true">⊙</span>
+              <a href="tel:{{ site.phone }}">{{ site.phone }}</a>
+            </div>
+          {% endif %}
+          {% if site.email %}
+            <div class="contact-detail reveal-element">
+              <span class="contact-icon" aria-hidden="true">✉</span>
+              <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <!-- Right: Form -->
+      <div class="contact-form-wrap reveal-element">
+        <form method="POST" action="{% url 'home' %}#contact" class="contact-form" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="contact" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_name">Name *</label>
+              {{ contact_form.name }}
+              {% if contact_form.name.errors %}
+                <span class="form-error">{{ contact_form.name.errors.0 }}</span>
+              {% endif %}
+            </div>
+            <div class="form-group">
+              <label for="id_email">Email *</label>
+              {{ contact_form.email }}
+              {% if contact_form.email.errors %}
+                <span class="form-error">{{ contact_form.email.errors.0 }}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="id_subject">Subject</label>
+            {{ contact_form.subject }}
+          </div>
+
+          <div class="form-group">
+            <label for="id_message">Message *</label>
+            {{ contact_form.message }}
+            {% if contact_form.message.errors %}
+              <span class="form-error">{{ contact_form.message.errors.0 }}</span>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full">
+            Send Message
+            <span class="btn-arrow" aria-hidden="true">→</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     LIGHTBOX for gallery preview
+═══════════════════════════════════════════════════════ -->
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous">‹</button>
+  <button class="lightbox-next" id="lightboxNext" aria-label="Next">›</button>
+  <div class="lightbox-content">
+    <img id="lightboxImg" src="" alt="" />
+    <p id="lightboxCaption" class="lightbox-caption"></p>
+  </div>
+</div>
+<div id="lightboxBackdrop" class="lightbox-backdrop" hidden></div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'core/js/home.js' %}"></script>
+{% endblock %}

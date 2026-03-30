@@ -1,0 +1,119 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Contact — {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}
+
+{% block content %}
+
+<section class="page-hero" aria-label="Contact">
+  <div class="page-hero-content">
+    <div class="section-label">We'd Love to Hear From You</div>
+    <h1 class="page-hero-title">Contact Us</h1>
+  </div>
+  <div class="page-hero-bg" aria-hidden="true"></div>
+</section>
+
+<section class="contact-page-section section">
+  <div class="container">
+    <div class="contact-grid contact-grid--page">
+
+      <!-- Contact details -->
+      <div class="contact-info">
+        <h2 class="contact-info-title reveal-element">Reach Out</h2>
+        <p class="contact-description reveal-element">
+          Our admissions and support team is available Monday–Friday, 9am–5pm.
+          We typically respond within one business day.
+        </p>
+
+        {% if site %}
+          {% if site.address %}
+          <div class="contact-detail reveal-element">
+            <span class="contact-icon" aria-hidden="true">◎</span>
+            <div>
+              <strong>Address</strong>
+              <p>{{ site.address }}</p>
+            </div>
+          </div>
+          {% endif %}
+          {% if site.phone %}
+          <div class="contact-detail reveal-element">
+            <span class="contact-icon" aria-hidden="true">⊙</span>
+            <div>
+              <strong>Phone</strong>
+              <p><a href="tel:{{ site.phone }}">{{ site.phone }}</a></p>
+            </div>
+          </div>
+          {% endif %}
+          {% if site.email %}
+          <div class="contact-detail reveal-element">
+            <span class="contact-icon" aria-hidden="true">✉</span>
+            <div>
+              <strong>Email</strong>
+              <p><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+            </div>
+          </div>
+          {% endif %}
+        {% else %}
+          <div class="contact-detail reveal-element">
+            <span class="contact-icon" aria-hidden="true">✉</span>
+            <div>
+              <strong>Email</strong>
+              <p><a href="mailto:info@apexuniversity.edu">info@apexuniversity.edu</a></p>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Social links -->
+        <div class="contact-social reveal-element">
+          <p class="contact-social-label">Follow us online:</p>
+          <div class="social-icons">
+            {% if site %}
+              {% if site.facebook_url %}<a href="{{ site.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook">f</a>{% endif %}
+              {% if site.instagram_url %}<a href="{{ site.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram">◎</a>{% endif %}
+              {% if site.linkedin_url %}<a href="{{ site.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>{% endif %}
+              {% if site.twitter_url %}<a href="{{ site.twitter_url }}" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>{% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact form -->
+      <div class="contact-form-wrap reveal-element">
+        <form method="POST" class="contact-form" novalidate>
+          {% csrf_token %}
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_name">Full Name *</label>
+              {{ form.name }}
+              {% if form.name.errors %}<span class="form-error">{{ form.name.errors.0 }}</span>{% endif %}
+            </div>
+            <div class="form-group">
+              <label for="id_email">Email Address *</label>
+              {{ form.email }}
+              {% if form.email.errors %}<span class="form-error">{{ form.email.errors.0 }}</span>{% endif %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="id_subject">Subject</label>
+            {{ form.subject }}
+          </div>
+
+          <div class="form-group">
+            <label for="id_message">Your Message *</label>
+            {{ form.message }}
+            {% if form.message.errors %}<span class="form-error">{{ form.message.errors.0 }}</span>{% endif %}
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full">
+            Send Message <span class="btn-arrow" aria-hidden="true">→</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

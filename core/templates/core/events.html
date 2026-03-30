@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Upcoming Events — {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero" aria-label="Upcoming Events">
+  <div class="page-hero-content">
+    <div class="section-label">Campus Calendar</div>
+    <h1 class="page-hero-title">Upcoming Events</h1>
+    <p class="page-hero-sub">Workshops, celebrations, seminars, and student experiences happening across campus.</p>
+  </div>
+  <div class="page-hero-bg" aria-hidden="true"></div>
+</section>
+
+<section class="events-page-section section">
+  <div class="container">
+    {% if events %}
+    <div class="events-grid">
+      {% for event in events %}
+      <article class="event-card">
+        <div class="event-date-block">
+          <span class="event-month">{{ event.event_date|date:"M" }}</span>
+          <span class="event-day">{{ event.event_date|date:"d" }}</span>
+        </div>
+        <div class="event-body">
+          {% if event.category %}<span class="event-category">{{ event.category }}</span>{% endif %}
+          <h2>{{ event.title }}</h2>
+          <p>{{ event.summary }}</p>
+          <div class="event-meta">
+            {% if event.event_time %}<span>{{ event.event_time }}</span>{% endif %}
+            {% if event.location %}<span>{{ event.location }}</span>{% endif %}
+          </div>
+          {% if event.cta_link %}
+          <a href="{{ event.cta_link }}" class="section-link">{{ event.cta_text|default:"Learn More" }} →</a>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>No upcoming events found. <a href="/admin/core/upcomingevent/add/">Add one in the admin →</a></p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

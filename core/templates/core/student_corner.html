@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Student Corner — {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero" aria-label="Student Corner">
+  <div class="page-hero-content">
+    <div class="section-label">Student Support</div>
+    <h1 class="page-hero-title">Student Corner</h1>
+    <p class="page-hero-sub">A dedicated student-focused area for resources, updates, support, and practical campus information.</p>
+  </div>
+  <div class="page-hero-bg" aria-hidden="true"></div>
+</section>
+
+<section class="portal-page-section section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Student Essentials</div>
+      <h2 class="section-title">Useful Information in One Place</h2>
+      <p class="section-intro">This page turns the website into something more useful for current students, not only applicants.</p>
+    </div>
+
+    <div class="feature-grid">
+      {% for item in student_corner %}
+      <article class="feature-card">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="feature-grid portal-spacing">
+      {% for item in student_services %}
+      <article class="feature-card">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="portal-two-col portal-spacing">
+      <div>
+        <div class="section-header compact-header">
+          <div class="section-label">Recent Updates</div>
+          <h2 class="section-title">Latest News</h2>
+        </div>
+        <div class="stack-list">
+          {% for post in recent_blogs %}
+          <article class="stack-card">
+            <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+            <p>{% if post.excerpt %}{{ post.excerpt|truncatechars:120 }}{% else %}{{ post.content|striptags|truncatechars:120 }}{% endif %}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <div class="section-header compact-header">
+          <div class="section-label">Calendar</div>
+          <h2 class="section-title">Upcoming Events</h2>
+        </div>
+        <div class="stack-list">
+          {% for event in upcoming_events %}
+          <article class="stack-card">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.event_date|date:"M d, Y" }}{% if event.location %} • {{ event.location }}{% endif %}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

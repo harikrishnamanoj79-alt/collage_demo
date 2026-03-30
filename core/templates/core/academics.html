@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Academics — {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero" aria-label="Academics">
+  <div class="page-hero-content">
+    <div class="section-label">Learning Pathways</div>
+    <h1 class="page-hero-title">Academics</h1>
+    <p class="page-hero-sub">Programmes, departments, and academic strengths presented as a dedicated section of the site.</p>
+  </div>
+  <div class="page-hero-bg" aria-hidden="true"></div>
+</section>
+
+<section class="portal-page-section section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Programs</div>
+      <h2 class="section-title">Academic Tracks for Ambitious Students</h2>
+      <p class="section-intro">A stronger academics page helps visitors understand both what you teach and how you support learning.</p>
+    </div>
+
+    <div class="programs-grid">
+      {% for program in programs %}
+      <article class="program-card">
+        <span class="program-meta">{{ program.meta }}</span>
+        <h3>{{ program.name }}</h3>
+        <p>{{ program.description }}</p>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="feature-grid portal-spacing">
+      {% for item in academics_features %}
+      <article class="feature-card">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="section-header portal-spacing">
+      <div class="section-label">Departments</div>
+      <h2 class="section-title">Core Teaching Areas</h2>
+    </div>
+    <div class="feature-grid">
+      {% for department in departments %}
+      <article class="feature-card">
+        <h3>{{ department.title }}</h3>
+        <p>{{ department.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

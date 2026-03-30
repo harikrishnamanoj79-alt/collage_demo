@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} — {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}
+{% block meta_desc %}{% if post.excerpt %}{{ post.excerpt }}{% else %}{{ post.content|striptags|truncatechars:160 }}{% endif %}{% endblock %}
+
+{% block content %}
+
+<!-- Blog Post Hero -->
+<section class="post-hero" aria-label="{{ post.title }}">
+  {% if post.image %}
+    <div class="post-hero-bg" style="background-image: url('{{ post.image.url }}');"></div>
+  {% else %}
+    <div class="post-hero-bg post-hero-bg--gradient"></div>
+  {% endif %}
+  <div class="post-hero-overlay" aria-hidden="true"></div>
+  <div class="post-hero-content">
+    {% if post.category %}
+      <span class="blog-category">{{ post.category }}</span>
+    {% endif %}
+    <h1 class="post-hero-title">{{ post.title }}</h1>
+    <div class="post-meta">
+      <span>By {{ post.author }}</span>
+      <span class="post-meta-dot" aria-hidden="true">·</span>
+      <time datetime="{{ post.created_at|date:'Y-m-d' }}">{{ post.created_at|date:"F d, Y" }}</time>
+    </div>
+  </div>
+</section>
+
+<!-- Blog Post Content -->
+<section class="post-content-section section">
+  <div class="container container--narrow">
+    <div class="post-body reveal-element">
+      {{ post.content|safe }}
+    </div>
+
+    <!-- Back link -->
+    <div class="post-nav reveal-element">
+      <a href="{% url 'blog_list' %}" class="btn btn--ghost">← Back to Blog</a>
+    </div>
+  </div>
+</section>
+
+<!-- Related Posts -->
+{% if related %}
+<section class="related-posts section" aria-label="Related Posts">
+  <div class="container">
+    <h2 class="section-title reveal-element">Related Posts</h2>
+    <div class="blog-grid">
+      {% for rpost in related %}
+      <article class="blog-card reveal-element" style="--card-delay: {{ forloop.counter0 }};">
+        <a href="{{ rpost.get_absolute_url }}" class="blog-card-link" tabindex="-1" aria-hidden="true">
+          <div class="blog-card-image">
+            {% if rpost.image %}
+              <img src="{{ rpost.image.url }}" alt="{{ rpost.title }}" loading="lazy" />
+            {% else %}
+              <div class="blog-card-placeholder" aria-hidden="true"><span>{{ rpost.title|first }}</span></div>
+            {% endif %}
+            <div class="blog-card-overlay" aria-hidden="true"></div>
+          </div>
+        </a>
+        <div class="blog-card-body">
+          <h3 class="blog-card-title"><a href="{{ rpost.get_absolute_url }}">{{ rpost.title }}</a></h3>
+          <time datetime="{{ rpost.created_at|date:'Y-m-d' }}">{{ rpost.created_at|date:"M d, Y" }}</time>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}{% endblock %}</title>
+  <meta name="description" content="{% block meta_desc %}A premier institution for higher learning.{% endblock %}" />
+
+  <!-- Google Fonts: Playfair Display + DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{% static 'core/css/main.css' %}" />
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="dark-theme">
+
+  <!-- ─── PRELOADER ──────────────────────────────────────── -->
+  <div id="preloader" aria-hidden="true">
+    <div class="preloader-inner">
+      <div class="preloader-logo">
+        {% if site and site.logo %}
+          <img src="{{ site.logo.url }}" alt="Logo" />
+        {% else %}
+          <span class="preloader-wordmark">{% if site %}{{ site.college_name }}{% else %}APEX{% endif %}</span>
+        {% endif %}
+      </div>
+      <div class="preloader-bar">
+        <div class="preloader-fill"></div>
+      </div>
+      <span class="preloader-percent">0%</span>
+    </div>
+  </div>
+
+  <!-- ─── CURSOR (desktop only) ──────────────────────────── -->
+  <div id="cursor" aria-hidden="true">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+  </div>
+
+  <!-- ─── NAVBAR ─────────────────────────────────────────── -->
+  <header id="navbar" class="navbar" role="banner">
+    <nav class="nav-container" aria-label="Main navigation">
+      <!-- Logo / College Name -->
+      <a href="{% url 'home' %}" class="nav-logo" aria-label="Homepage">
+        {% if site and site.logo %}
+          <img src="{{ site.logo.url }}" alt="{{ site.college_name }}" />
+        {% else %}
+          <span class="logo-text">{% if site %}{{ site.college_name }}{% else %}APEX{% endif %}</span>
+        {% endif %}
+      </a>
+
+      <!-- Desktop Links -->
+      <ul class="nav-links" role="list">
+        <li><a href="{% url 'home' %}#hero" class="nav-link {% if page == 'home' %}active{% endif %}">Home</a></li>
+        <li><a href="{% url 'academics' %}" class="nav-link {% if page == 'academics' %}active{% endif %}">Academics</a></li>
+        <li><a href="{% url 'events' %}" class="nav-link {% if page == 'events' %}active{% endif %}">Events</a></li>
+        <li><a href="{% url 'campus_life' %}" class="nav-link {% if page == 'campus_life' %}active{% endif %}">Campus Life</a></li>
+        <li><a href="{% url 'student_corner' %}" class="nav-link {% if page == 'student_corner' %}active{% endif %}">Students</a></li>
+        <li><a href="{% url 'admissions' %}" class="nav-link {% if page == 'admissions' %}active{% endif %}">Admissions</a></li>
+        <li><a href="{% url 'gallery' %}" class="nav-link {% if page == 'gallery' %}active{% endif %}">Gallery</a></li>
+        <li><a href="{% url 'contact' %}" class="nav-link {% if page == 'contact' %}active{% endif %}">Contact</a></li>
+        <li><a href="/admin/" class="nav-cta" target="_blank" rel="noopener">Admin</a></li>
+      </ul>
+
+      <!-- Hamburger (mobile) -->
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+      <ul class="mobile-links" role="list">
+        <li><a href="{% url 'home' %}#hero" class="mobile-link">Home</a></li>
+        <li><a href="{% url 'academics' %}" class="mobile-link">Academics</a></li>
+        <li><a href="{% url 'events' %}" class="mobile-link">Events</a></li>
+        <li><a href="{% url 'campus_life' %}" class="mobile-link">Campus Life</a></li>
+        <li><a href="{% url 'student_corner' %}" class="mobile-link">Students</a></li>
+        <li><a href="{% url 'admissions' %}" class="mobile-link">Admissions</a></li>
+        <li><a href="{% url 'gallery' %}" class="mobile-link">Gallery</a></li>
+        <li><a href="{% url 'contact' %}" class="mobile-link">Contact</a></li>
+        <li><a href="/admin/" class="mobile-link">Admin Panel ↗</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ─── MAIN CONTENT ───────────────────────────────────── -->
+  <main id="main-content">
+    {% if messages %}
+      <div class="flash-messages" aria-live="polite">
+        {% for msg in messages %}
+          <div class="flash flash--{{ msg.tags }}">
+            {{ msg }}
+            <button class="flash-close" aria-label="Close">&times;</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ─── FOOTER ─────────────────────────────────────────── -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <p class="footer-name">{% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}</p>
+        {% if site and site.tagline %}
+          <p class="footer-tagline">{{ site.tagline }}</p>
+        {% endif %}
+        {% if site and site.address %}
+          <p class="footer-address">{{ site.address }}</p>
+        {% endif %}
+      </div>
+
+      <div class="footer-links">
+        <h4 class="footer-heading">Quick Links</h4>
+        <ul>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'academics' %}">Academics</a></li>
+          <li><a href="{% url 'events' %}">Upcoming Events</a></li>
+          <li><a href="{% url 'campus_life' %}">Campus Life</a></li>
+          <li><a href="{% url 'student_corner' %}">Student Corner</a></li>
+          <li><a href="{% url 'admissions' %}">Admissions</a></li>
+          <li><a href="{% url 'gallery' %}">Gallery</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4 class="footer-heading">Contact</h4>
+        {% if site %}
+          {% if site.phone %}<p>📞 {{ site.phone }}</p>{% endif %}
+          {% if site.email %}<p>✉ {{ site.email }}</p>{% endif %}
+        {% else %}
+          <p>✉ info@apexuniversity.edu</p>
+        {% endif %}
+      </div>
+
+      <div class="footer-social">
+        <h4 class="footer-heading">Follow Us</h4>
+        <div class="social-icons">
+          {% if site %}
+            {% if site.facebook_url %}<a href="{{ site.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook">f</a>{% endif %}
+            {% if site.twitter_url %}<a href="{{ site.twitter_url }}" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>{% endif %}
+            {% if site.instagram_url %}<a href="{{ site.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram">◎</a>{% endif %}
+            {% if site.linkedin_url %}<a href="{{ site.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>{% endif %}
+            {% if site.youtube_url %}<a href="{{ site.youtube_url }}" target="_blank" rel="noopener" aria-label="YouTube">▶</a>{% endif %}
+          {% else %}
+            <a href="#" aria-label="Instagram">◎</a>
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="Twitter">𝕏</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© <span id="year"></span> {% if site %}{{ site.college_name }}{% else %}Apex University{% endif %}. All rights reserved.</p>
+      <p class="footer-credit">Built with Django &amp; GSAP</p>
+    </div>
+  </footer>
+
+  <!-- ─── SCRIPTS ───────────────────────────────────────── -->
+  <script src="{% static 'core/js/main.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>
