@@ -278,3 +278,5 @@ Optional persistence:
 Built with ❤️ using Django 4.2 · GSAP 3.12 · Lenis 1.0
 #   c o l l a g e _ d e m o  
  
+#   c o l l a g e _ d e m o  
+ 
