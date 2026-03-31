@@ -18,11 +18,12 @@ def env_bool(name, default=False):
 
 DEBUG = env_bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost','.onrender.com').split(',')
-    if host.strip()
-]
+import os
+
+ALLOWED_HOSTS = os.getenv(
+    'ALLOWED_HOSTS',
+    '127.0.0.1,localhost,.onrender.com'
+).split(',')
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
